@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, TextInput, ScrollView, Image } from "react-native";
 import tw from 'twrnc';
 import Icon from 'react-native-vector-icons/FontAwesome'; 
@@ -18,44 +18,22 @@ export default function HomeScreen() {
         console.log("Filter button pressed");
     };
 
-    const canteens = [
-        { 
-            name: "Frontier (AC)", 
-            nearestFaculty: "Science, Medicine",
-            image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiN8fBowGffweGVSgeVpieBwXYwSbE1lvaGoIoLK2bw3rT2UHdhc1Eob6aN0fuTusdz0ajEZ_XvCl93qz9WKRQypKVG3CkI02tO15FjKutuWsAZYhqnd6DnXFstkf1QE7l79Y0Dn_yJCa8/s640/1IMG_20180521_152419.jpg"
-        },
-        { 
-            name: "Frontier", 
-            nearestFaculty: "Medicine, Science",
-            image: "https://uci.nus.edu.sg/oca/wp-content/uploads/sites/9/2018/05/Frontier-Canteen-1024x684.jpg"
-        },
-        { 
-            name: "PGP Canteen", 
-            nearestFaculty: "Prince George's Park",
-            image: "https://uci.nus.edu.sg/oca/wp-content/uploads/sites/9/2018/05/PGP-canteen.jpg"
-        },
-        { 
-            name: "The Deck (AC)", 
-            nearestFaculty: "FASS, Computing, Business",
-            image: "https://uci.nus.edu.sg/oca/wp-content/uploads/sites/9/2018/09/Pasta-Express-Science-1024x684.jpg"
-        },
-        { 
-            name: "The Deck", 
-            nearestFaculty: "FASS, Computing, Business",
-            image: "https://taylorinsingapore.wordpress.com/wp-content/uploads/2014/02/fass-canteen2.jpg?w=640"
-        },
-        { 
-            name: "Terrace", 
-            nearestFaculty: "Computing",
-            image: "https://content.presspage.com/uploads/2580/1920_terrace-1.png?10000"
-        },
-        { 
-            name: "Techno Edge", 
-            nearestFaculty: "Engineering",
-            image: "https://nus.edu.sg/alumnet//images/librariesprovider2/issue-125/canteen-1"
-        },
-    ];
+    const [canteens, setCanteens] = useState([]);
 
+    useEffect(() => {
+        const fetchCanteens = async () => {
+            try {
+                const response = await fetch('http://192.168.1.75:5000/dashboard/canteens');
+                const data = await response.json();
+                setCanteens(data);
+            } catch (error) {
+                console.error('Error fetching canteen data:', error);
+            }
+        };
+
+        fetchCanteens();
+    }, []);
+    
     const tabs = [
         { name: "Home", icon: "home", type: "feather" },
         { name: "Search", icon: "search", type: "feather" },

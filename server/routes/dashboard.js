@@ -17,4 +17,14 @@ router.get("/", authorise, async (req, res) => {
   }
 });
 
+router.get('/api/canteens', async (req, res) => {
+  try {
+      const result = await pool.query('SELECT * FROM canteens');
+      res.json(result.rows);
+  } catch (err) {
+      console.error('Error fetching canteen data:', err);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 module.exports = router;
