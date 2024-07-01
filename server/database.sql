@@ -22,3 +22,16 @@ INSERT INTO canteens (name, nearestFaculty, image) VALUES
 ('The Deck', 'FASS, Computing, Business', 'https://taylorinsingapore.wordpress.com/wp-content/uploads/2014/02/fass-canteen2.jpg?w=640'),
 ('Terrace', 'Computing', 'https://content.presspage.com/uploads/2580/1920_terrace-1.png?10000'),
 ('Techno Edge', 'Engineering', 'https://nus.edu.sg/alumnet//images/librariesprovider2/issue-125/canteen-1');
+
+CREATE TABLE reviews (
+    id SERIAL NOT NULL PRIMARY KEY,
+    canteen_id INT NOT NULL REFERENCES canteens(id),
+    title VARCHAR(50) NOT NULL,
+    review TEXT NOT NULL,
+    rating INT NOT NULL check(
+        rating >= 1
+        and rating <= 5
+    )
+);
+
+INSERT INTO reviews (canteen_id, title, review, rating) values (1, "Test title 1", "Test review 1", 4);
