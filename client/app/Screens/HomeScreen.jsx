@@ -6,7 +6,8 @@ import IconIonic from 'react-native-vector-icons/Ionicons';
 import IconFA5 from 'react-native-vector-icons/FontAwesome5';
 import IconFeather from 'react-native-vector-icons/Feather';
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
+
     const [searchText, setSearchText] = useState("");
 
     const handleSearchTextChange = (text) => {
@@ -24,7 +25,8 @@ export default function HomeScreen() {
         const fetchCanteens = async () => {
             try {
                 const response = await fetch('http://192.168.1.75:5000/dashboard/canteens');
-                const data = await response.json();
+                const result = await response.json();
+                const data = result.data.canteens;
                 setCanteens(data);
             } catch (error) {
                 console.error('Error fetching canteen data:', error);
@@ -33,7 +35,7 @@ export default function HomeScreen() {
 
         fetchCanteens();
     }, []);
-    
+
     const tabs = [
         { name: "Home", icon: "home", type: "feather" },
         { name: "Search", icon: "search", type: "feather" },
@@ -81,9 +83,11 @@ export default function HomeScreen() {
                 {canteens.map((canteen) => (
                     <Canteen
                         key={canteen.name}
+                        id = {canteen.id}
                         name={canteen.name}
                         nearestFaculty={canteen.nearestFaculty}
                         image={canteen.image}
+                        navigation={navigation}
                     />
                 ))}
             </ScrollView>
@@ -98,7 +102,7 @@ export default function HomeScreen() {
     );
 }
 
-const Canteen = ({ name, nearestFaculty, image }) => {
+const Canteen = ({ id, name, nearestFaculty, image, navigation }) => {
     const [isFavourited, setIsFavourited] = useState(false);
     const [isCanteenInformationOpen, setIsCanteenInformationOpen] = useState(false);
 
@@ -120,7 +124,8 @@ const Canteen = ({ name, nearestFaculty, image }) => {
     const heartColor = isFavourited ? "orange" : "gray";
 
     return (
-        <TouchableOpacity onPress={toggleCanteenInformation}>
+        // <TouchableOpacity onPress={toggleCanteenInformation}
+        <TouchableOpacity onPress={() => navigation.navigate('Reviews', { canteenId: id })}>
             <View style={tw`flex flex-col my-2 mx-2`}>
                 <View style={tw`w-full rounded-lg overflow-hidden`}>
                     <Image
@@ -142,7 +147,7 @@ const Canteen = ({ name, nearestFaculty, image }) => {
                         <Icon name="heart" size={20} color={heartColor} />
                     </TouchableOpacity>
                 </View>
-                {isCanteenInformationOpen && (
+                {/* {isCanteenInformationOpen && (
                     <View style={tw`flex flex-col py-1`}>
                         {stalls.map((stall) => (
                             <View key={stall.stall} style={tw`pl-4`}>
@@ -150,7 +155,7 @@ const Canteen = ({ name, nearestFaculty, image }) => {
                             </View>
                         ))}
                     </View>
-                )}
+                )} */}
             </View>
         </TouchableOpacity>
     );
