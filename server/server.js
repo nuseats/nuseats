@@ -1,22 +1,20 @@
 const express = require('express');
-const app = express();
 const cors = require("cors");
 
-const PORT = process.env.PORT || 5000;
+const app = express();
+const port = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(cors());
 
 // ROUTES //
-
-// register and login routes
-
+// Register and login routes
 app.use('/auth', require('./routes/jwtAuth'));
 
-//dashboard route
-
+// Dashboard route
 app.use('/dashboard', require('./routes/dashboard'));
 
-app.listen(PORT, () => {
-    console.log(`server running on port ${PORT}`);
-})
+// Ensure there's only one app.listen statement
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
