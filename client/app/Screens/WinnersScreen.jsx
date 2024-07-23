@@ -5,8 +5,11 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import IconIonic from 'react-native-vector-icons/Ionicons'; 
 import IconFA5 from 'react-native-vector-icons/FontAwesome5';
 import IconFeather from 'react-native-vector-icons/Feather';
+import { useNavigation } from '@react-navigation/native';
 
 export default function WinnersScreen() {
+
+    const navigation = useNavigation(); // useNavigation hook
 
     const awards = [
         { 
@@ -44,7 +47,7 @@ export default function WinnersScreen() {
     ];
 
     const handleTabPress = (tab) => {
-        console.log(tab.name);
+        navigation.navigate('Home');
     };
 
     const renderIcon = (icon, type) => {
@@ -73,14 +76,17 @@ export default function WinnersScreen() {
                         username = {award.username}
                     />
                 ))}
+                <TouchableOpacity style={tw`bg-orange-500 py-3 mx-4 my-4 rounded-lg`} onPress={() => navigation.navigate('Vote')}>
+                    <Text style={tw`text-white text-center text-lg`}>Vote for your favourite Eaters</Text>
+                </TouchableOpacity>
             </ScrollView>
+            
             <View style={tw`flex flex-row justify-around bg-orange-500 py-4`}>
                 {tabs.map((tab) => (
                     <TouchableOpacity key={tab.name} onPress={() => handleTabPress(tab)} style={tw`flex items-center`}>
                         {renderIcon(tab.icon, tab.type)}
                     </TouchableOpacity>
                 ))}
-                
             </View>
             
         </View>
@@ -89,24 +95,6 @@ export default function WinnersScreen() {
 }
 
 const Award = ({ title, description, profile, username }) => {
-
-    const styles = {
-        buttonContainer: {
-          backgroundColor: 'orange',
-          paddingHorizontal: 16, 
-          paddingVertical: 8, 
-          borderRadius: 20,
-        },
-        buttonText: {
-          color: 'white',
-        //   fontWeight: 'bold',
-          textAlign: 'center',
-        },
-        rightAlign: {
-            flex: 1,
-            alignItems: 'flex-end', // Align to the right
-          },
-      };
 
     return (
         <View>
@@ -120,14 +108,7 @@ const Award = ({ title, description, profile, username }) => {
                             <View style={tw`flex flex-row`}>
                                 <Text style={tw`text-gray-500`}>{description}</Text>
                             </View>
-                        </View>
-                        <View style={tw`flex flex-row justify-between px-3 py-2`}>
-                            <View>
-                                <TouchableOpacity style={styles.buttonContainer}>
-                                    <Text style={styles.buttonText}>Vote</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
+                        </View> 
                     </View>
                 </View>
             </TouchableOpacity>

@@ -83,9 +83,6 @@ export default function HomeScreen() {
     
     return (
         <View style={tw`flex flex-col h-full bg-white`}>
-            {/* <View style={tw`bg-orange-500 p-4`}>
-                <Text style={tw`text-white text-xl font-bold`}>Canteens</Text>
-            </View> */}
             <View style={tw`flex flex-row justify-between px-3 py-2`}>
                 <TextInput
                     onChangeText={handleSearchTextChange}
