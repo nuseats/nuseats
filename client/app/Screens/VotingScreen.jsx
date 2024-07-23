@@ -12,7 +12,7 @@ const VotingPage = () => {
     const navigation = useNavigation(); // useNavigation hook
 
     // to be retrieved from the database
-    const contestants = ["user1", "user2", "user3", "user4", "user5"];
+    const contestants = ["Vege Crunch", "YumyumNomNom", "QuackKing", "oop", "skibidiRIZZ"];
 
     const awards = [
         {
@@ -22,9 +22,9 @@ const VotingPage = () => {
         },
     ];
 
-    const handleVotePress = () => {
+    const handleVotePress = (contestant) => {
         // Handle the vote button press here
-        Alert.alert('Vote', 'You voted!');
+        Alert.alert('Nice Choice', `You have voted for ${contestant}!`);
     };
 
     // bottom tab
@@ -61,6 +61,7 @@ const VotingPage = () => {
           paddingHorizontal: 16, 
           paddingVertical: 8, 
           borderRadius: 20,
+          marginTop: 8,
         },
         buttonText: {
           color: 'white',
@@ -70,7 +71,7 @@ const VotingPage = () => {
           backgroundColor: 'rgba(0, 0, 0, 0.05)', 
           padding: 20,
           marginVertical: 4,
-          borderRadius: 8,
+          borderRadius: 8, 
         },
       };
 
@@ -82,20 +83,24 @@ const VotingPage = () => {
                         <Text style={tw`font-bold text-xl text-black mb-1`}>
                             {award.title}
                         </Text>
-                        <Text style={tw`text-gray-500 mb-2`}>
+                        <Text style={tw`text-gray-500 mb-3`}>
                             {award.description}
                         </Text>
                         
                         {award.contestants.map((contestant, cIndex) => (
-                            <View key={cIndex} style={styles.contestantContainer}>
-                                <Text>- {contestant}</Text>
+                            <View key={cIndex} style={tw`mb-1`}>
+                                <View style={styles.contestantContainer}>
+                                    <Text style={tw`text-lg`}> {contestant}</Text>
+                                </View>
+                                <View style={tw`flex-row-reverse mb-1`}>
+                                    <TouchableOpacity 
+                                        style={styles.buttonContainer} 
+                                        onPress={() => handleVotePress(contestant)}>
+                                        <Text style={styles.buttonText}>Vote</Text>
+                                    </TouchableOpacity>
+                                </View>
                             </View>
                         ))}
-                        <View style={tw`flex-row-reverse`}>
-                            <TouchableOpacity style={styles.buttonContainer} onPress={handleVotePress}>
-                                <Text style={styles.buttonText}>Vote</Text>
-                            </TouchableOpacity>
-                        </View>
                     </View>
                 ))}
             </ScrollView>
