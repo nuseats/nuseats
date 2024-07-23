@@ -1,8 +1,16 @@
-import React from 'react';
-import { View, Text, Alert, TouchableOpacity } from 'react-native';
+import React from "react";
+import { View, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
 import tw from 'twrnc';
+import Icon from 'react-native-vector-icons/FontAwesome'; 
+import IconIonic from 'react-native-vector-icons/Ionicons'; 
+import IconFA5 from 'react-native-vector-icons/FontAwesome5';
+import IconFeather from 'react-native-vector-icons/Feather';
+import { useNavigation } from '@react-navigation/native';
 
 const VotingPage = () => {
+
+    const navigation = useNavigation(); // useNavigation hook
+
     // to be retrieved from the database
     const contestants = ["user1", "user2", "user3", "user4", "user5"];
 
@@ -19,6 +27,34 @@ const VotingPage = () => {
         Alert.alert('Vote', 'You voted!');
     };
 
+    // bottom tab
+    const tabs = [
+        { name: "Home", icon: "home", type: "feather" },
+        { name: "Search", icon: "search", type: "feather" },
+        { name: "Add", icon: "plus-square", type: "feather" }, // Using Feather for plus-square
+        { name: "Replies", icon: "inbox", type: "feather" },
+        { name: "Profile", icon: "user", type: "feather" },
+    ];
+
+    const renderIcon = (icon, type) => {
+        switch (type) {
+            case 'ionicons':
+                return <IconIonic name={icon} size={24} color="black" />;
+            case 'fontawesome5':
+                return <IconFA5 name={icon} size={24} color="black" />;
+            case 'feather':
+                return <IconFeather name={icon} size={24} color="black" />; 
+            default:
+                return <Icon name={icon} size={24} color="black" />;
+        }
+    };
+
+    const handleTabPress = (tab) => {
+        navigation.navigate(tab.name); // Navigate to the screen named after the tab
+    };
+    // end of bottom tab
+
+    // style for vote button
     const styles = {
         buttonContainer: {
           backgroundColor: 'orange',
@@ -28,36 +64,49 @@ const VotingPage = () => {
         },
         buttonText: {
           color: 'white',
-        //   fontWeight: 'bold',
           textAlign: 'center',
         },
-        rightAlign: {
-            flex: 1,
-            alignItems: 'flex-end', // Align to the right
-          },
+        contestantContainer: {
+          backgroundColor: 'rgba(0, 0, 0, 0.05)', 
+          padding: 20,
+          marginVertical: 4,
+          borderRadius: 8,
+        },
       };
 
     return (
-        <View style = {tw`mx-4 my-4`}>
-            {awards.map((award, index) => (
-                <View key={index}>
-                    <Text style={tw`font-bold text-xl text-black mb-1`}>
-                        {award.title}
-                    </Text>
-                    <Text style = {tw`text-gray-500 mb-2`}>
-                        {award.description}
-                    </Text>
-                    
-                    {award.contestants.map((contestant, cIndex) => (
-                        <Text key={cIndex}>- {contestant}</Text>
-                    ))}
-                    <View style = {tw`flex-row-reverse`}>
-                        <TouchableOpacity style={styles.buttonContainer}>
-                            <Text style={styles.buttonText}>Vote</Text>
-                        </TouchableOpacity>
+        <View style={tw`flex-1 bg-white`}>
+            <ScrollView style={tw`flex-1 px-4 py-4`}>
+                {awards.map((award, index) => (
+                    <View key={index} style={tw`mb-4`}>
+                        <Text style={tw`font-bold text-xl text-black mb-1`}>
+                            {award.title}
+                        </Text>
+                        <Text style={tw`text-gray-500 mb-2`}>
+                            {award.description}
+                        </Text>
+                        
+                        {award.contestants.map((contestant, cIndex) => (
+                            <View key={cIndex} style={styles.contestantContainer}>
+                                <Text>- {contestant}</Text>
+                            </View>
+                        ))}
+                        <View style={tw`flex-row-reverse`}>
+                            <TouchableOpacity style={styles.buttonContainer} onPress={handleVotePress}>
+                                <Text style={styles.buttonText}>Vote</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                </View>
-            ))}
+                ))}
+            </ScrollView>
+            
+            <View style={tw`flex flex-row justify-around bg-orange-500 py-4`}>
+                {tabs.map((tab) => (
+                    <TouchableOpacity key={tab.name} onPress={() => handleTabPress(tab)} style={tw`flex items-center`}>
+                        {renderIcon(tab.icon, tab.type)}
+                    </TouchableOpacity>
+                ))}
+            </View>
         </View>
     );
 };
