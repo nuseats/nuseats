@@ -11,7 +11,7 @@ router.post("/register", validInfo, async (req, res) => {
     try {
         
         //1. destructure the req.body (name, email, password)
-        const { name, email, password } = req.body;
+        const { name, username, email, password } = req.body;
 
         //2. check if user exist --> throw error
         const user = await pool.query("SELECT * FROM users WHERE email = $1", [
@@ -35,8 +35,8 @@ router.post("/register", validInfo, async (req, res) => {
         //4. enter the new user inside database
 
         let newUser = await pool.query(
-            "INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING *",
-            [name, email, bcryptPassword]
+            "INSERT INTO users (name, username, email, password) VALUES ($1, $2, $3, $4) RETURNING *",
+            [name, username, email, bcryptPassword]
         );
 
         //5. generate jwt token

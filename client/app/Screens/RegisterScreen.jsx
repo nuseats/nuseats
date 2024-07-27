@@ -3,12 +3,14 @@ import React, { useState } from 'react';
 
 const RegisterScreen = ({navigation}) => {
   const [name, setName] = useState('');
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleRegister = async () => {
     const userData = {
       name: name,
+      username: name,
       email: email,
       password: password,
     };
@@ -51,6 +53,12 @@ const RegisterScreen = ({navigation}) => {
         placeholder="Name"
         value={name}
         onChangeText={setName}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Username"
+        value={username}
+        onChangeText={setUsername}
       />
       <TextInput
         style={styles.input}

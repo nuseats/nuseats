@@ -1,10 +1,11 @@
 CREATE DATABASE nuseats;
 
-CREATE TABLE users {
+CREATE TABLE users { 
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL,
-    password VARCHAR(255) NOT NULL
+    username  VARCHAR(255) UNIQUE NOT NULL, 
+    name VARCHAR(255) NOT NULL, 
+    email VARCHAR(255) NOT NULL, 
+    password VARCHAR(255) NOT NULL 
 };
 
 CREATE TABLE canteens (
@@ -35,3 +36,13 @@ CREATE TABLE reviews (
 );
 
 INSERT INTO reviews (canteen_id, title, review, rating) values (1, "Test title 1", "Test review 1", 4);
+
+-- created table awards for the WinnerScreen
+CREATE TABLE awards (
+    id SERIAL PRIMARY KEY,  -- Unique identifier for each award
+    title VARCHAR(255) NOT NULL,  -- Title of the award
+    description TEXT,  -- Description of the award
+    profile VARCHAR(255),  -- URL or path to the profile image (optional)
+    user_id UUID NOT NULL,  -- User ID associated with the award
+    FOREIGN KEY (user_id) REFERENCES users(id)  -- Foreign key constraint
+);

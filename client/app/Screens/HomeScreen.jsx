@@ -38,8 +38,8 @@ export default function HomeScreen({ navigation }) {
 
     const tabs = [
         { name: "Home", icon: "home", type: "feather" },
-        { name: "Search", icon: "search", type: "feather" },
-        { name: "Add", icon: "plus-square", type: "feather" }, // Using Feather for plus-square
+        { name: "Contest", icon: "award", type: "feather" },
+        { name: "Add", icon: "plus-square", type: "feather" }, 
         { name: "Replies", icon: "inbox", type: "feather" },
         { name: "Profile", icon: "user", type: "feather" },
     ];
@@ -63,9 +63,6 @@ export default function HomeScreen({ navigation }) {
     
     return (
         <View style={tw`flex flex-col h-full bg-white`}>
-            {/* <View style={tw`bg-orange-500 p-4`}>
-                <Text style={tw`text-white text-xl font-bold`}>Canteens</Text>
-            </View> */}
             <View style={tw`flex flex-row justify-between px-3 py-2`}>
                 <TextInput
                     onChangeText={handleSearchTextChange}
