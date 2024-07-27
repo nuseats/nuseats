@@ -3,12 +3,14 @@ import React, { useState } from 'react';
 
 const RegisterScreen = ({navigation}) => {
   const [name, setName] = useState('');
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleRegister = async () => {
     const userData = {
       name: name,
+      username: name,
       email: email,
       password: password,
     };
@@ -16,7 +18,7 @@ const RegisterScreen = ({navigation}) => {
     console.log('Registering:', userData);
   
     try {
-      const response = await fetch(`http://192.168.1.75:5000/auth/register`, {
+      const response = await fetch('http://localhost:5000/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -51,6 +53,12 @@ const RegisterScreen = ({navigation}) => {
         placeholder="Name"
         value={name}
         onChangeText={setName}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Username"
+        value={username}
+        onChangeText={setUsername}
       />
       <TextInput
         style={styles.input}
