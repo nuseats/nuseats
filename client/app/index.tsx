@@ -15,11 +15,6 @@ const Stack = createNativeStackNavigator();
 export default function Index() {
     return (
         <Stack.Navigator>
-          <Stack.Screen name = "Profile" component= {ProfileScreen} />
-          <Stack.Screen name = "Winners" component = {WinnersScreen} options = {{title: 'Eaters of the Month'}}/>
-          <Stack.Screen name = "Vote" component = {VotingScreen} options = {{title: 'Vote'}}/>
-          <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }}/>
-          <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }}/>
           <Stack.Screen
             name="Home"
             component={HomeScreen}
@@ -30,6 +25,11 @@ export default function Index() {
             component={ReviewsScreen}
             options={{ title: 'Reviews' }}
           />
+          <Stack.Screen name = "Profile" component= {ProfileScreen} />
+          <Stack.Screen name = "Winners" component = {WinnersScreen} options = {{title: 'Eaters of the Month'}}/>
+          <Stack.Screen name = "Vote" component = {VotingScreen} options = {{title: 'Vote'}}/>
+          <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }}/>
+          <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }}/>
       </Stack.Navigator>
     );
   }
