@@ -24,7 +24,7 @@ export default function HomeScreen({ navigation }) {
     useEffect(() => {
         const fetchCanteens = async () => {
             try {
-                const response = await fetch('http://192.168.1.75:5000/dashboard/canteens');
+                const response = await fetch('http://localhost:5000/dashboard/canteens');
                 const result = await response.json();
                 const data = result.data.canteens;
                 setCanteens(data);

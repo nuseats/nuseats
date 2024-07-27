@@ -12,7 +12,7 @@ export default function ReviewsScreen({ route }) {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await fetch(`http://192.168.1.75:5000/dashboard/canteens/${canteenId}`);
+        const response = await fetch(`http://localhost:5000/dashboard/canteens/${canteenId}`);
         const results = await response.json();
         setCanteen(results.data.canteen)
         setReviews(results.data.reviews);
@@ -26,7 +26,7 @@ export default function ReviewsScreen({ route }) {
 
   const handleAddReview = async () => {
     try {
-      const response = await fetch(`http://192.168.1.75:5000/dashboard/canteens/${canteenId}/add-review`, {
+      const response = await fetch(`http://localhost:5000/dashboard/canteens/${canteenId}/add-review`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
