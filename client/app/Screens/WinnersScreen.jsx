@@ -40,8 +40,8 @@ export default function WinnersScreen() {
 
     const tabs = [
         { name: "Home", icon: "home", type: "feather" },
-        { name: "Search", icon: "search", type: "feather" },
-        { name: "Add", icon: "plus-square", type: "feather" }, // Using Feather for plus-square
+        { name: "Contest", icon: "award", type: "feather" },
+        { name: "Add", icon: "plus-square", type: "feather" }, 
         { name: "Replies", icon: "inbox", type: "feather" },
         { name: "Profile", icon: "user", type: "feather" },
     ];
@@ -76,7 +76,7 @@ export default function WinnersScreen() {
                         username = {award.username}
                     />
                 ))}
-                <TouchableOpacity style={tw`bg-orange-500 py-3 mx-4 my-4 rounded-lg`} onPress={() => navigation.navigate('Vote')}>
+                <TouchableOpacity style={tw`bg-orange-400 py-3 mx-4 my-4 rounded-lg`} onPress={() => navigation.navigate('Vote')}>
                     <Text style={tw`text-white text-center text-lg`}>Vote for your favourite Eaters</Text>
                 </TouchableOpacity>
             </ScrollView>
@@ -113,7 +113,7 @@ const Award = ({ title, description, profile, username }) => {
                 </View>
             </TouchableOpacity>
             <TouchableOpacity>
-                <View style={tw`flex flex-col mb-1 mx-4`}>
+                <View style={tw`flex flex-col mx-4`}>
                     <View style={tw`w-full rounded-lg overflow-hidden`}>
                         <ImageBackground
                             source={{ uri: profile }}
