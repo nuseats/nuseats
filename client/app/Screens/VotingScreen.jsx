@@ -28,30 +28,30 @@ const VotingPage = () => {
     };
 
     // bottom tab
-    const tabs = [
-        { name: "Home", icon: "home", type: "feather" },
-        { name: "Contest", icon: "award", type: "feather" },
-        { name: "Add", icon: "plus-square", type: "feather" }, 
-        { name: "Replies", icon: "inbox", type: "feather" },
-        { name: "Profile", icon: "user", type: "feather" },
-    ];
+    // const tabs = [
+    //     { name: "Home", icon: "home", type: "feather" },
+    //     { name: "Contest", icon: "award", type: "feather" },
+    //     { name: "Add", icon: "plus-square", type: "feather" }, 
+    //     { name: "Replies", icon: "inbox", type: "feather" },
+    //     { name: "Profile", icon: "user", type: "feather" },
+    // ];
 
-    const renderIcon = (icon, type) => {
-        switch (type) {
-            case 'ionicons':
-                return <IconIonic name={icon} size={24} color="black" />;
-            case 'fontawesome5':
-                return <IconFA5 name={icon} size={24} color="black" />;
-            case 'feather':
-                return <IconFeather name={icon} size={24} color="black" />; 
-            default:
-                return <Icon name={icon} size={24} color="black" />;
-        }
-    };
+    // const renderIcon = (icon, type) => {
+    //     switch (type) {
+    //         case 'ionicons':
+    //             return <IconIonic name={icon} size={24} color="black" />;
+    //         case 'fontawesome5':
+    //             return <IconFA5 name={icon} size={24} color="black" />;
+    //         case 'feather':
+    //             return <IconFeather name={icon} size={24} color="black" />; 
+    //         default:
+    //             return <Icon name={icon} size={24} color="black" />;
+    //     }
+    // };
 
-    const handleTabPress = (tab) => {
-        navigation.navigate(tab.name); // Navigate to the screen named after the tab
-    };
+    // const handleTabPress = (tab) => {
+    //     navigation.navigate(tab.name); // Navigate to the screen named after the tab
+    // };
     // end of bottom tab
 
     // style for vote button
@@ -105,13 +105,13 @@ const VotingPage = () => {
                 ))}
             </ScrollView>
             
-            <View style={tw`flex flex-row justify-around bg-orange-500 py-4`}>
+            {/* <View style={tw`flex flex-row justify-around bg-orange-500 py-4`}>
                 {tabs.map((tab) => (
                     <TouchableOpacity key={tab.name} onPress={() => handleTabPress(tab)} style={tw`flex items-center`}>
                         {renderIcon(tab.icon, tab.type)}
                     </TouchableOpacity>
                 ))}
-            </View>
+            </View> */}
         </View>
     );
 };
