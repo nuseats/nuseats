@@ -6,7 +6,8 @@ import HomeScreen from '../Screens/HomeScreen';
 import ReviewsScreen from '../Screens/ReviewsScreen';
 import ProfileScreen from '../Screens/ProfileScreen';
 import WinnersScreen from '../Screens/WinnersScreen';
-import VotingScreen from '../Screens/VotingScreen';
+// voting screen not included, will navigate from winner screen
+import PostReviewScreen from '../Screens/PostReviewScreen';
 import Icon from 'react-native-vector-icons/Feather';
 import tw from 'twrnc';
 import RandomReviewScreen from '../Screens/RandomReviewScreen';
@@ -60,7 +61,7 @@ export default function BottomTabs() {
             {
               Home: HomeScreen,
               Random: RandomReviewScreen,
-              Post: ReviewsScreen,
+              Post: PostReviewScreen,
               Contest: WinnersScreen,
               Profile: ProfileScreen,
             }[tab.name]
