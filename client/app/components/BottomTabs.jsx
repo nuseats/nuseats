@@ -1,16 +1,13 @@
 import React from 'react';
-import { View } from 'react-native';
-import { View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import HomeScreen from '../Screens/HomeScreen';
 import ReviewsScreen from '../Screens/ReviewsScreen';
 import ProfileScreen from '../Screens/ProfileScreen';
-import WinnersScreen from '../Screens/WinnersScreen';
-// voting screen only comes from winner screen
+import AwardsStackNav from './AwardsStackNav';
+import HomeStackNav from './HomeStackNav';
 import Icon from 'react-native-vector-icons/Feather';
 import tw from 'twrnc';
 import RandomReviewScreen from '../Screens/RandomReviewScreen';
+import PostReviewScreen from '../Screens/PostReviewScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -59,10 +56,10 @@ export default function BottomTabs() {
           name={tab.name}
           component={
             {
-              Home: HomeScreen,
-              Review: ReviewsScreen,
-              Post: ReviewsScreen,
-              Contest: WinnersScreen,
+              Home: HomeStackNav,
+              Review: RandomReviewScreen,
+              Post: PostReviewScreen,
+              Contest: AwardsStackNav,
               Profile: ProfileScreen,
             }[tab.name]
           }

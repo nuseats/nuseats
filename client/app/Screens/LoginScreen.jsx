@@ -25,13 +25,14 @@ const LoginScreen = ({ navigation }) => {
   
       if (response.ok) {
         const data = await response.json(); // Parse the JSON response
-
+        console.log(data);
         if (data.token) {
           const token = data.token;
           console.log('Login successful! Token:', token);
+          console.log('User_id:', data.user_id);
           navigation.navigate('Main');
-          // Save the token to AsyncStorage or Redux state for future use
           await AsyncStorage.setItem('token', token);
+          await AsyncStorage.setItem('user_id', data.user_id);
         } else {
           console.log('Token not found in response:', data);
         }

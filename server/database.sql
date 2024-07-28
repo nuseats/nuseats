@@ -27,15 +27,12 @@ INSERT INTO canteens (name, nearestFaculty, image) VALUES
 CREATE TABLE reviews (
     id SERIAL NOT NULL PRIMARY KEY,
     canteen_id INT NOT NULL REFERENCES canteens(id),
+    user_id uuid NOT NULL REFERENCES users(id),
     title VARCHAR(50) NOT NULL,
     review TEXT NOT NULL,
-    rating INT NOT NULL check(
-        rating >= 1
-        and rating <= 5
-    )
+    time_sensitive BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
-INSERT INTO reviews (canteen_id, title, review, rating) values (1, "Test title 1", "Test review 1", 4);
 
 -- created table awards for the WinnerScreen
 CREATE TABLE awards (
@@ -49,7 +46,7 @@ CREATE TABLE awards (
 
 CREATE TABLE upvotes (
   review_id INT,
-  user_id INT,
+  user_id uuid,
   PRIMARY KEY (review_id, user_id),
   FOREIGN KEY (review_id) REFERENCES reviews(id),
   FOREIGN KEY (user_id) REFERENCES users(id)
