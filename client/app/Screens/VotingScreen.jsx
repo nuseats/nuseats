@@ -24,7 +24,7 @@ const VotingPage = () => {
 
     const handleVotePress = (contestant) => {
         // Handle the vote button press here
-        Alert.alert('Nice Choice', `You have voted for ${contestant}!`);
+        Alert.alert('Great Choice!', `You have voted for ${contestant}`);
     };
 
     // bottom tab
@@ -50,7 +50,7 @@ const VotingPage = () => {
     // };
 
     // const handleTabPress = (tab) => {
-    //     navigation.navigate(tab.name); // Navigate to the screen named after the tab
+    //     navigation.navigate(tab.name); 
     // };
     // end of bottom tab
 
