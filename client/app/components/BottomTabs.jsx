@@ -1,23 +1,25 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../Screens/HomeScreen';
 import ReviewsScreen from '../Screens/ReviewsScreen';
 import ProfileScreen from '../Screens/ProfileScreen';
 import WinnersScreen from '../Screens/WinnersScreen';
-import VotingScreen from '../Screens/VotingScreen';
-import Icon from 'react-native-vector-icons/Feather'; 
+// voting screen not included, will navigate from winner screen
+import PostReviewScreen from '../Screens/PostReviewScreen';
+import Icon from 'react-native-vector-icons/Feather';
 import tw from 'twrnc';
+import RandomReviewScreen from '../Screens/RandomReviewScreen';
 
 const Tab = createBottomTabNavigator();
 
 const tabs = [
   { name: 'Home', icon: 'home', type: 'feather' },
-  { name: 'Reviews', icon: 'star', type: 'feather' },
+  { name: 'Random', icon: 'book-open', type: 'feather' },
+  { name: 'Post', icon: 'plus-square', type: 'feather' },
+  { name: 'Contest', icon: 'award', type: 'feather' },
   { name: 'Profile', icon: 'user', type: 'feather' },
-  { name: 'Winners', icon: 'trophy', type: 'feather' },
-  { name: 'Vote', icon: 'thumbs-up', type: 'feather' },
 ];
 
 const renderIcon = (icon, type) => {
@@ -33,7 +35,7 @@ const renderIcon = (icon, type) => {
   }
 };
 
-export default function BottomTabs () {
+export default function BottomTabs() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -41,10 +43,13 @@ export default function BottomTabs () {
           const tab = tabs.find(tab => tab.name === route.name);
           return tab ? renderIcon(tab.icon, tab.type) : null;
         },
+        tabBarShowLabel: false, // hiding the labels
         tabBarActiveTintColor: 'tomato',
         tabBarInactiveTintColor: 'gray',
         tabBarStyle: {
           backgroundColor: tw.color('orange-500'),
+          height: 60, // height of the tab bar
+          paddingBottom: 10, 
         },
       })}
     >
@@ -55,13 +60,12 @@ export default function BottomTabs () {
           component={
             {
               Home: HomeScreen,
-              Reviews: ReviewsScreen,
+              Random: RandomReviewScreen,
+              Post: PostReviewScreen,
+              Contest: WinnersScreen,
               Profile: ProfileScreen,
-              Winners: WinnersScreen,
-              Vote: VotingScreen,
             }[tab.name]
           }
-          options={{ title: tab.name }}
         />
       ))}
     </Tab.Navigator>
