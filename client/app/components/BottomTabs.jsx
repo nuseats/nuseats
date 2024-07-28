@@ -1,13 +1,13 @@
 import React from 'react';
 import { View } from 'react-native';
+import { View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../Screens/HomeScreen';
 import ReviewsScreen from '../Screens/ReviewsScreen';
 import ProfileScreen from '../Screens/ProfileScreen';
 import WinnersScreen from '../Screens/WinnersScreen';
-// voting screen not included, will navigate from winner screen
-import PostReviewScreen from '../Screens/PostReviewScreen';
+// voting screen only comes from winner screen
 import Icon from 'react-native-vector-icons/Feather';
 import tw from 'twrnc';
 import RandomReviewScreen from '../Screens/RandomReviewScreen';
@@ -16,7 +16,7 @@ const Tab = createBottomTabNavigator();
 
 const tabs = [
   { name: 'Home', icon: 'home', type: 'feather' },
-  { name: 'Random', icon: 'book-open', type: 'feather' },
+  { name: 'Review', icon: 'book-open', type: 'feather' },
   { name: 'Post', icon: 'plus-square', type: 'feather' },
   { name: 'Contest', icon: 'award', type: 'feather' },
   { name: 'Profile', icon: 'user', type: 'feather' },
@@ -43,13 +43,13 @@ export default function BottomTabs() {
           const tab = tabs.find(tab => tab.name === route.name);
           return tab ? renderIcon(tab.icon, tab.type) : null;
         },
-        tabBarShowLabel: false, // hiding the labels
+        tabBarShowLabel: false, // hiding the words, just like instagram
         tabBarActiveTintColor: 'tomato',
         tabBarInactiveTintColor: 'gray',
         tabBarStyle: {
           backgroundColor: tw.color('orange-500'),
-          height: 60, // height of the tab bar
-          paddingBottom: 10, 
+          height: 60, 
+          paddingBottom: 10, // greater than top padding because iphone 15
         },
       })}
     >
@@ -60,8 +60,8 @@ export default function BottomTabs() {
           component={
             {
               Home: HomeScreen,
-              Random: RandomReviewScreen,
-              Post: PostReviewScreen,
+              Review: ReviewsScreen,
+              Post: ReviewsScreen,
               Contest: WinnersScreen,
               Profile: ProfileScreen,
             }[tab.name]

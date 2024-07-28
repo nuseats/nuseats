@@ -11,6 +11,7 @@ export default function WinnersScreen() {
 
     const navigation = useNavigation(); // useNavigation hook
 
+    // use the awards data table
     const awards = [
         { 
             title: "Funniest Nickname", 
