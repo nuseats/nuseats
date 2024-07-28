@@ -1,5 +1,6 @@
 import React from 'react';
 import { View } from 'react-native';
+import { View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../Screens/HomeScreen';
@@ -9,6 +10,7 @@ import WinnersScreen from '../Screens/WinnersScreen';
 // voting screen only comes from winner screen
 import Icon from 'react-native-vector-icons/Feather';
 import tw from 'twrnc';
+import RandomReviewScreen from '../Screens/RandomReviewScreen';
 
 const Tab = createBottomTabNavigator();
 
