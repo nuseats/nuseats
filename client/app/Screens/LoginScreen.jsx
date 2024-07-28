@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -30,11 +31,10 @@ const LoginScreen = ({ navigation }) => {
           console.log('Login successful! Token:', token);
           navigation.navigate('Main');
           // Save the token to AsyncStorage or Redux state for future use
-          // Navigate to Home or perform other actions
+          await AsyncStorage.setItem('token', token);
         } else {
           console.log('Token not found in response:', data);
         }
-        // Navigate to Home or perform other actions
       } else {
         console.log('Login failed:', response.statusText);
       }

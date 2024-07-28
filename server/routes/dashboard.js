@@ -122,4 +122,35 @@ router.post("/canteens/:id/add-review", async (req, res) => {
   }
 });
 
+router.get('/review/:reviewId/status', authorise, async (req, res) => {
+  const { reviewId } = req.params;
+  const userId = req.user.id;
+
+  const result = await pool.query(`
+    SELECT EXISTS (
+      SELECT 1 FROM upvotes WHERE review_id = $1 AND user_id = $2
+    ) AS has_upvoted,
+    (SELECT COUNT(*) FROM upvotes WHERE review_id = $1) AS upvote_count
+  `, [reviewId, userId]);
+
+  return res.json(result.rows[0]);
+});
+
+router.post('/review/:reviewId/upvote', authorise, async (req, res) => {
+  const { reviewId } = req.params;
+  const userId = req.user.id;
+  try {
+    const existingUpvote = await pool.query('SELECT * FROM Upvotes WHERE user_id = $1 AND review_id = $2', [userId, reviewId]);
+    if (existingUpvote.rows.length > 0) {
+        await pool.query('DELETE FROM Upvotes WHERE user_id = $1 AND review_id = $2', [userId, reviewId]);
+        res.status(200).json({ message: 'Upvote removed' });
+    } else {
+        await pool.query('INSERT INTO Upvotes (user_id, review_id) VALUES ($1, $2)', [userId, reviewId]);
+        res.status(200).json({ message: 'Upvoted successfully' });
+    }
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 module.exports = router;

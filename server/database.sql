@@ -46,3 +46,11 @@ CREATE TABLE awards (
     user_id UUID NOT NULL,  -- User ID associated with the award
     FOREIGN KEY (user_id) REFERENCES users(id)  -- Foreign key constraint
 );
+
+CREATE TABLE upvotes (
+  review_id INT,
+  user_id INT,
+  PRIMARY KEY (review_id, user_id),
+  FOREIGN KEY (review_id) REFERENCES reviews(id),
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);

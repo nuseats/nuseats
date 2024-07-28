@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { ScrollView, View, Text, FlatList, StyleSheet, TextInput,  TouchableOpacity, } from 'react-native';
 import tw from 'twrnc';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ReviewsScreen({ route }) {
   const { canteenId } = route.params;
@@ -8,6 +10,7 @@ export default function ReviewsScreen({ route }) {
   const [reviews, setReviews] = useState([]);
   const [reviewTitle, setReviewTitle] = useState('');
   const [reviewContent, setReviewContent] = useState('');
+  const [upvoteStatus, setUpvoteStatus] = useState({});
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -16,6 +19,7 @@ export default function ReviewsScreen({ route }) {
         const results = await response.json();
         setCanteen(results.data.canteen)
         setReviews(results.data.reviews);
+        results.data.reviews.forEach(review => fetchUpvoteStatus(review.id));
       } catch (error) {
         console.error('Error fetching reviews:', error);
       }
@@ -41,7 +45,6 @@ export default function ReviewsScreen({ route }) {
       const result = await response.json();
       console.log('Review added successfully:', result);
 
-      // Update local state with the new review
       setReviews([...reviews, { id: result.id, canteen_id: result.canteen_id, title: reviewTitle, review: reviewContent }]);
       
       // Clear input fields
@@ -49,6 +52,51 @@ export default function ReviewsScreen({ route }) {
       setReviewContent('');
     } catch (error) {
       console.error('Error adding review:', error);
+    }
+  };
+
+  const fetchUpvoteStatus = async (reviewId) => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const response = await fetch(`http://localhost:5000/dashboard/review/${reviewId}/status`, {
+        headers: {
+          'token': `${token}`,
+        }
+      });
+      const data = await response.json();
+      setUpvoteStatus((prev) => ({
+        ...prev,
+        [reviewId]: {
+          hasUpvoted: data.has_upvoted,
+          count: data.upvote_count,
+        }
+      }));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleUpvote = async (reviewId) => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      await fetch(`http://localhost:5000/dashboard/review/${reviewId}/upvote`, {
+        method: 'POST',
+        headers: {
+          'token': `${token}`,
+        }
+      });
+      setUpvoteStatus((prev) => {
+        const currentStatus = prev[reviewId];
+        return {
+          ...prev,
+          [reviewId]: {
+            hasUpvoted: !currentStatus.hasUpvoted,
+            count: currentStatus.hasUpvoted ? currentStatus.count - 1 : Number(currentStatus.count) + 1,
+          }
+        };
+      });
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -77,13 +125,25 @@ export default function ReviewsScreen({ route }) {
           </View>
           <FlatList
             data={reviews}
-            keyExtractor={(item) => item._id}
+            keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <View key={item._id} style={tw`w-full mb-4 p-2`}>
+              <View key={item.id} style={tw`w-full mb-4 p-2 relative`}>
                 <Text style={tw`text-lg font-semibold mb-2`}>{item.title}</Text>
                 <View style={tw`p-3 border border-gray-300 rounded bg-gray-100`}>
                   <Text>{item.review}</Text>
+                  <br></br>
                 </View>
+                <TouchableOpacity
+                  onPress={() => handleUpvote(item.id)}
+                  style={tw`absolute bottom-2 right-2 flex-row items-center p-2`}
+                >
+                  <Icon
+                    name={upvoteStatus[item.id]?.hasUpvoted ? "thumbs-up" : "thumbs-o-up"}
+                    size={24}
+                    color={upvoteStatus[item.id]?.hasUpvoted ? tw.color('orange-500') : "gray"}
+                  />
+                  <Text style={tw`ml-2`}>{upvoteStatus[item.id]?.count || 0}</Text>
+                </TouchableOpacity>
               </View>
             )}
           />
