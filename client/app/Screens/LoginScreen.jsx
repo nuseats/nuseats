@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -14,7 +15,7 @@ const LoginScreen = ({ navigation }) => {
     console.log('Logging in with:', userData);
   
     try {
-      const response = await fetch('http://localhost:5000/auth/login', {
+      const response = await fetch(`http://localhost:5000/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -28,13 +29,12 @@ const LoginScreen = ({ navigation }) => {
         if (data.token) {
           const token = data.token;
           console.log('Login successful! Token:', token);
-          navigation.navigate('Home');
+          navigation.navigate('Main');
           // Save the token to AsyncStorage or Redux state for future use
-          // Navigate to Home or perform other actions
+          await AsyncStorage.setItem('token', token);
         } else {
           console.log('Token not found in response:', data);
         }
-        // Navigate to Home or perform other actions
       } else {
         console.log('Login failed:', response.statusText);
       }

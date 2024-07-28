@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, TextInput, ScrollView, Image } from "react-native";
 import tw from 'twrnc';
 import Icon from 'react-native-vector-icons/FontAwesome'; 
@@ -6,7 +6,8 @@ import IconIonic from 'react-native-vector-icons/Ionicons';
 import IconFA5 from 'react-native-vector-icons/FontAwesome5';
 import IconFeather from 'react-native-vector-icons/Feather';
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
+
     const [searchText, setSearchText] = useState("");
 
     const handleSearchTextChange = (text) => {
@@ -18,68 +19,47 @@ export default function HomeScreen() {
         console.log("Filter button pressed");
     };
 
-    const canteens = [
-        { 
-            name: "Frontier (AC)", 
-            nearestFaculty: "Science, Medicine",
-            image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiN8fBowGffweGVSgeVpieBwXYwSbE1lvaGoIoLK2bw3rT2UHdhc1Eob6aN0fuTusdz0ajEZ_XvCl93qz9WKRQypKVG3CkI02tO15FjKutuWsAZYhqnd6DnXFstkf1QE7l79Y0Dn_yJCa8/s640/1IMG_20180521_152419.jpg"
-        },
-        { 
-            name: "Frontier", 
-            nearestFaculty: "Medicine, Science",
-            image: "https://uci.nus.edu.sg/oca/wp-content/uploads/sites/9/2018/05/Frontier-Canteen-1024x684.jpg"
-        },
-        { 
-            name: "PGP Canteen", 
-            nearestFaculty: "Prince George's Park",
-            image: "https://uci.nus.edu.sg/oca/wp-content/uploads/sites/9/2018/05/PGP-canteen.jpg"
-        },
-        { 
-            name: "The Deck (AC)", 
-            nearestFaculty: "FASS, Computing, Business",
-            image: "https://uci.nus.edu.sg/oca/wp-content/uploads/sites/9/2018/09/Pasta-Express-Science-1024x684.jpg"
-        },
-        { 
-            name: "The Deck", 
-            nearestFaculty: "FASS, Computing, Business",
-            image: "https://taylorinsingapore.wordpress.com/wp-content/uploads/2014/02/fass-canteen2.jpg?w=640"
-        },
-        { 
-            name: "Terrace", 
-            nearestFaculty: "Computing",
-            image: "https://content.presspage.com/uploads/2580/1920_terrace-1.png?10000"
-        },
-        { 
-            name: "Techno Edge", 
-            nearestFaculty: "Engineering",
-            image: "https://nus.edu.sg/alumnet//images/librariesprovider2/issue-125/canteen-1"
-        },
-    ];
+    const [canteens, setCanteens] = useState([]);
 
-    const tabs = [
-        { name: "Home", icon: "home", type: "feather" },
-        { name: "Contest", icon: "award", type: "feather" },
-        { name: "Add", icon: "plus-square", type: "feather" }, 
-        { name: "Replies", icon: "inbox", type: "feather" },
-        { name: "Profile", icon: "user", type: "feather" },
-    ];
+    useEffect(() => {
+        const fetchCanteens = async () => {
+            try {
+                const response = await fetch('http://localhost:5000/dashboard/canteens');
+                const result = await response.json();
+                const data = result.data.canteens;
+                setCanteens(data);
+            } catch (error) {
+                console.error('Error fetching canteen data:', error);
+            }
+        };
 
-    const handleTabPress = (tab) => {
-        console.log(tab.name);
-    };
+        fetchCanteens();
+    }, []);
 
-    const renderIcon = (icon, type) => {
-        switch (type) {
-            case 'ionicons':
-                return <IconIonic name={icon} size={24} color="black" />;
-            case 'fontawesome5':
-                return <IconFA5 name={icon} size={24} color="black" />;
-            case 'feather':
-                return <IconFeather name={icon} size={24} color="black" />; 
-            default:
-                return <Icon name={icon} size={24} color="black" />;
-        }
-    };
+    // const tabs = [
+    //     { name: "Home", icon: "home", type: "feather" },
+    //     { name: "Contest", icon: "award", type: "feather" },
+    //     { name: "Add", icon: "plus-square", type: "feather" }, 
+    //     { name: "Replies", icon: "inbox", type: "feather" },
+    //     { name: "Profile", icon: "user", type: "feather" },
+    // ];
+
+    // const handleTabPress = (tab) => {
+    //     console.log(tab.name);
+    // };
+
+    // const renderIcon = (icon, type) => {
+    //     switch (type) {
+    //         case 'ionicons':
+    //             return <IconIonic name={icon} size={24} color="black" />;
+    //         case 'fontawesome5':
+    //             return <IconFA5 name={icon} size={24} color="black" />;
+    //         case 'feather':
+    //             return <IconFeather name={icon} size={24} color="black" />; 
+    //         default:
+    //             return <Icon name={icon} size={24} color="black" />;
+    //     }
+    // };
     
     return (
         <View style={tw`flex flex-col h-full bg-white`}>
@@ -100,24 +80,26 @@ export default function HomeScreen() {
                 {canteens.map((canteen) => (
                     <Canteen
                         key={canteen.name}
+                        id = {canteen.id}
                         name={canteen.name}
                         nearestFaculty={canteen.nearestFaculty}
                         image={canteen.image}
+                        navigation={navigation}
                     />
                 ))}
             </ScrollView>
-            <View style={tw`flex flex-row justify-around bg-orange-500 py-4`}>
+            {/* <View style={tw`flex flex-row justify-around bg-orange-500 py-4`}>
                 {tabs.map((tab) => (
                     <TouchableOpacity key={tab.name} onPress={() => handleTabPress(tab)} style={tw`flex items-center`}>
                         {renderIcon(tab.icon, tab.type)}
                     </TouchableOpacity>
                 ))}
-            </View>
+            </View> */}
         </View>
     );
 }
 
-const Canteen = ({ name, nearestFaculty, image }) => {
+const Canteen = ({ id, name, nearestFaculty, image, navigation }) => {
     const [isFavourited, setIsFavourited] = useState(false);
     const [isCanteenInformationOpen, setIsCanteenInformationOpen] = useState(false);
 
@@ -139,7 +121,8 @@ const Canteen = ({ name, nearestFaculty, image }) => {
     const heartColor = isFavourited ? "orange" : "gray";
 
     return (
-        <TouchableOpacity onPress={toggleCanteenInformation}>
+        // <TouchableOpacity onPress={toggleCanteenInformation}
+        <TouchableOpacity onPress={() => navigation.navigate('Reviews', { canteenId: id })}>
             <View style={tw`flex flex-col my-2 mx-2`}>
                 <View style={tw`w-full rounded-lg overflow-hidden`}>
                     <Image
@@ -161,7 +144,7 @@ const Canteen = ({ name, nearestFaculty, image }) => {
                         <Icon name="heart" size={20} color={heartColor} />
                     </TouchableOpacity>
                 </View>
-                {isCanteenInformationOpen && (
+                {/* {isCanteenInformationOpen && (
                     <View style={tw`flex flex-col py-1`}>
                         {stalls.map((stall) => (
                             <View key={stall.stall} style={tw`pl-4`}>
@@ -169,7 +152,7 @@ const Canteen = ({ name, nearestFaculty, image }) => {
                             </View>
                         ))}
                     </View>
-                )}
+                )} */}
             </View>
         </TouchableOpacity>
     );
