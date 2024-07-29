@@ -183,7 +183,79 @@ router.get('/random-review', async (req, res) => {
       res.status(404).json({ error: 'No reviews found' });
     }
   } catch (err) {
-    console.error('Error fetching random review:', err);
+    console.log(err);
+  }
+});
+
+router.get('/awards', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM awards');
+    res.status(200).json({
+      status: 'success',
+      data: result.rows,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+router.get('/users', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT id, username FROM users');
+    res.status(200).json({
+      status: 'success',
+      data: result.rows,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// Example Express.js endpoint for handling votes
+router.post('/vote', async (req, res) => {
+  const { voter_id, user_id, award_id } = req.body;
+  try {
+      const result = await pool.query(
+          'INSERT INTO votes (voter_id, user_id, award_id) VALUES ($1, $2, $3) RETURNING *',
+          [voter_id, user_id, award_id]
+      );
+      res.status(201).json(result.rows[0]);
+  } catch (err) {
+      console.log(err);
+  }
+});
+
+
+router.get('/user-votes/:voterId', async (req, res) => {
+  const { voterId } = req.params;
+
+  try {
+    const result = await pool.query(
+      `SELECT 
+        v.id AS vote_id, 
+        v.user_id, 
+        uu.username AS user_username, 
+        v.award_id, 
+        a.title AS award_title, 
+        a.description AS award_description
+      FROM 
+        votes v
+      JOIN 
+        users uu ON v.user_id = uu.id
+      JOIN 
+        awards a ON v.award_id = a.id
+      WHERE 
+        v.voter_id = $1`,
+      [voterId]
+    );
+
+    if (result.rows.length > 0) {
+      res.status(200).json({ votes: result.rows });
+    } else {
+      res.status(404).json({ error: 'No votes found for this user' });
+    }
+  } catch (err) {
+    console.error('Error fetching user votes:', err);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });

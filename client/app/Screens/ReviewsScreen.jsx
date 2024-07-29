@@ -108,7 +108,7 @@ export default function ReviewsScreen({ route }) {
   return (
     <View style={tw`flex flex-col h-full bg-white`}>
       {canteen && (
-        <ScrollView style={tw`p-6`}>
+        <ScrollView key="scroll" style={tw`p-6`}>
           <Text style={tw`text-2xl mb-6 p-2 font-bold`}>{canteen.name}</Text>
           <View style={tw`w-full mb-4 p-2`}>
             <TextInput
@@ -122,11 +122,11 @@ export default function ReviewsScreen({ route }) {
               <Text style={tw`text-white`}>Add Review</Text>
             </TouchableOpacity>
           </View>
-          <FlatList
+          {/* <FlatList
             data={reviews}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) }
             renderItem={({ item }) => (
-              <View key={item.id} style={tw`mb-4 p-4 rounded-lg bg-gray-100`}>
+              <View style={tw`mb-4 p-4 rounded-lg bg-gray-100`}>
                 <Text style={tw`text-lg font-bold`}>
                   @{item.username}
                 </Text>
@@ -150,7 +150,32 @@ export default function ReviewsScreen({ route }) {
                 </TouchableOpacity>
               </View>
             )}
-          />
+          /> */}
+          {reviews.map((item) => (
+            <View key={item.id} style={tw`mb-4 p-4 rounded-lg bg-gray-100`}>
+              <Text style={tw`text-lg font-bold`}>
+                @{item.username}
+              </Text>
+              <Text style={tw`text-sm text-gray-600 mb-2`}>
+                {new Date(item.created_at).toLocaleDateString()}
+              </Text>
+              <Text style={tw`text-base`}>
+                {item.review}
+                <br />
+              </Text>
+              <TouchableOpacity
+                onPress={() => handleUpvote(item.id)}
+                style={tw`absolute bottom-2 right-2 flex-row items-center p-2`}
+              >
+                <Icon
+                  name={upvoteStatus[item.id]?.hasUpvoted ? "thumbs-up" : "thumbs-o-up"}
+                  size={24}
+                  color={upvoteStatus[item.id]?.hasUpvoted ? tw.color('orange-500') : "gray"}
+                />
+                <Text style={tw`ml-2`}>{upvoteStatus[item.id]?.count || 0}</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
         </ScrollView>
       )}
     </View>

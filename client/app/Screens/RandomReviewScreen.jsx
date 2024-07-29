@@ -3,24 +3,6 @@ import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import tw from 'twrnc';
 import Icon from 'react-native-vector-icons/Feather';
 
-const reviews = [
-  {
-    username: 'kungfoodpanda',
-    review: 'must get noddle stall $3 big big portion with wanton, don’t complain js buy bros... the stall owners also suuuuuper generous i cant say more alr. u try u know ok. also must add chilli if not no authentic lah',
-    date: '2024-07-28',
-  },
-  {
-    username: 'n000000dle',
-    review: 'my go-to comfort food will always be chicken rice',
-    date: '2024-07-27',
-  },
-  {
-    username: 'quittingschool',
-    review: 'go try the korean chicken soup',
-    date: '2024-07-26',
-  },
-];
-
 const RandomReviewScreen = () => {
 
   const [review, setReview] = useState(null);
@@ -63,9 +45,6 @@ const RandomReviewScreen = () => {
       ) : (
         <View></View>
       )}
-      {/* <TouchableOpacity onPress={fetchRandomReview} style={tw`gray-100`}>
-        <Icon name="refresh-cw" size={24} color="black" />
-      </TouchableOpacity> */}
     </ScrollView>
   );
 };
