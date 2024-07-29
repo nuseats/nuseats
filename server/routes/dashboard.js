@@ -39,7 +39,21 @@ router.get('/canteens/:id', async (req, res) => {
   try {
       const canteens = await pool.query('SELECT * FROM canteens WHERE id = $1', [req.params.id]);
       const reviews = await pool.query(
-        "select * from reviews where canteen_id = $1",
+        `SELECT
+          r.id,
+          r.canteen_id,
+          r.review,
+          r.created_at,
+          r.time_sensitive,
+          u.username
+        FROM
+          reviews r
+        JOIN
+          users u
+        ON
+          r.user_id = u.id
+        WHERE
+          r.canteen_id = $1`,
         [req.params.id]
       );
       res.status(200).json({
@@ -66,7 +80,7 @@ router.post("/canteens", async (req, res) => {
     res.status(201).json({
       status: "succes",
       data: {
-        restaurant: results.rows[0],
+        canteens: results.rows[0],
       },
     });
   } catch (err) {
@@ -84,7 +98,7 @@ router.put("/canteens/:id", async (req, res) => {
     res.status(200).json({
       status: "succes",
       data: {
-        retaurant: results.rows[0],
+        canteen: results.rows[0],
       },
     });
   } catch (err) {
@@ -108,8 +122,8 @@ router.delete("/canteens/:id", async (req, res) => {
 router.post("/canteens/:id/add-review", async (req, res) => {
   try {
     const results = await pool.query(
-      "INSERT INTO reviews (canteen_id, title, review) values ($1, $2, $3) returning *",
-      [req.body.canteen_id, req.body.title, req.body.review]
+      "INSERT INTO reviews (canteen_id, user_id, review) values ($1, $2, $3) returning *",
+      [req.body.canteen_id, req.body.user_id, req.body.review]
     );
     res.status(201).json({
       status: "success",
@@ -150,6 +164,99 @@ router.post('/review/:reviewId/upvote', authorise, async (req, res) => {
     }
   } catch (err) {
     console.log(err);
+  }
+});
+
+router.get('/random-review', async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT reviews.*, users.username
+       FROM reviews
+       JOIN users ON reviews.user_id = users.id
+       ORDER BY RANDOM()
+       LIMIT 1`
+    );
+
+    if (result.rows.length > 0) {
+      res.status(200).json(result.rows[0]);
+    } else {
+      res.status(404).json({ error: 'No reviews found' });
+    }
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+router.get('/awards', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM awards');
+    res.status(200).json({
+      status: 'success',
+      data: result.rows,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+router.get('/users', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT id, username FROM users');
+    res.status(200).json({
+      status: 'success',
+      data: result.rows,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+// Example Express.js endpoint for handling votes
+router.post('/vote', async (req, res) => {
+  const { voter_id, user_id, award_id } = req.body;
+  try {
+      const result = await pool.query(
+          'INSERT INTO votes (voter_id, user_id, award_id) VALUES ($1, $2, $3) RETURNING *',
+          [voter_id, user_id, award_id]
+      );
+      res.status(201).json(result.rows[0]);
+  } catch (err) {
+      console.log(err);
+  }
+});
+
+
+router.get('/user-votes/:voterId', async (req, res) => {
+  const { voterId } = req.params;
+
+  try {
+    const result = await pool.query(
+      `SELECT 
+        v.id AS vote_id, 
+        v.user_id, 
+        uu.username AS user_username, 
+        v.award_id, 
+        a.title AS award_title, 
+        a.description AS award_description
+      FROM 
+        votes v
+      JOIN 
+        users uu ON v.user_id = uu.id
+      JOIN 
+        awards a ON v.award_id = a.id
+      WHERE 
+        v.voter_id = $1`,
+      [voterId]
+    );
+
+    if (result.rows.length > 0) {
+      res.status(200).json({ votes: result.rows });
+    } else {
+      res.status(404).json({ error: 'No votes found for this user' });
+    }
+  } catch (err) {
+    console.error('Error fetching user votes:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 

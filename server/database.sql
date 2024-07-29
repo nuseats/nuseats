@@ -27,15 +27,12 @@ INSERT INTO canteens (name, nearestFaculty, image) VALUES
 CREATE TABLE reviews (
     id SERIAL NOT NULL PRIMARY KEY,
     canteen_id INT NOT NULL REFERENCES canteens(id),
+    user_id uuid NOT NULL REFERENCES users(id),
     title VARCHAR(50) NOT NULL,
     review TEXT NOT NULL,
-    rating INT NOT NULL check(
-        rating >= 1
-        and rating <= 5
-    )
+    time_sensitive BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
-INSERT INTO reviews (canteen_id, title, review, rating) values (1, "Test title 1", "Test review 1", 4);
 
 -- created table awards for the WinnerScreen
 CREATE TABLE awards (
@@ -47,10 +44,27 @@ CREATE TABLE awards (
     FOREIGN KEY (user_id) REFERENCES users(id)  -- Foreign key constraint
 );
 
+INSERT INTO awards (title, description, user_id) VALUES
+('Funniest Nickname', 'Giving us some hehes and hahas in July', '26121220-16f5-42d8-92ec-916eccad3496'),
+('Our Vege Lover', 'crunch crunch', '26121220-16f5-42d8-92ec-916eccad3496'),
+('Best Eater', 'Our most trusted buddy', '26121220-16f5-42d8-92ec-916eccad3496'),
+('Some Other Award', 'Winner of July', '26121220-16f5-42d8-92ec-916eccad3496');
+
 CREATE TABLE upvotes (
   review_id INT,
-  user_id INT,
+  user_id uuid,
   PRIMARY KEY (review_id, user_id),
   FOREIGN KEY (review_id) REFERENCES reviews(id),
   FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE votes (
+    id SERIAL PRIMARY KEY,          
+    voter_id UUID NOT NULL,
+    user_id UUID NOT NULL,
+    award_id INTEGER NOT NULL,
+    UNIQUE(voter_id, award_id),
+    FOREIGN KEY (voter_id) REFERENCES users(id),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (award_id) REFERENCES awards(id)
 );

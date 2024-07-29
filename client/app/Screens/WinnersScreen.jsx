@@ -38,35 +38,9 @@ export default function WinnersScreen() {
             username: "Im the Best potato alive"
         },
     ];
-
-    // const tabs = [
-    //     { name: "Home", icon: "home", type: "feather" },
-    //     { name: "Contest", icon: "award", type: "feather" },
-    //     { name: "Add", icon: "plus-square", type: "feather" }, 
-    //     { name: "Replies", icon: "inbox", type: "feather" },
-    //     { name: "Profile", icon: "user", type: "feather" },
-    // ];
-
-    // const handleTabPress = (tab) => {
-    //     navigation.navigate('Home');
-    // };
-
-    // const renderIcon = (icon, type) => {
-    //     switch (type) {
-    //         case 'ionicons':
-    //             return <IconIonic name={icon} size={24} color="black" />;
-    //         case 'fontawesome5':
-    //             return <IconFA5 name={icon} size={24} color="black" />;
-    //         case 'feather':
-    //             return <IconFeather name={icon} size={24} color="black" />; 
-    //         default:
-    //             return <Icon name={icon} size={24} color="black" />;
-    //     }
-    // };
     
     return (
         <View style={tw`flex flex-col h-full bg-white`}>
-            
             <ScrollView style={tw`h-5/6`}>
                 {awards.map((award) => (
                     <Award
@@ -80,16 +54,7 @@ export default function WinnersScreen() {
                 <TouchableOpacity style={tw`bg-orange-400 py-3 mx-4 my-4 rounded-lg`} onPress={() => navigation.navigate('Vote')}>
                     <Text style={tw`text-white text-center text-lg`}>Vote for your favourite Eaters</Text>
                 </TouchableOpacity>
-            </ScrollView>
-            
-            {/* <View style={tw`flex flex-row justify-around bg-orange-500 py-4`}>
-                {tabs.map((tab) => (
-                    <TouchableOpacity key={tab.name} onPress={() => handleTabPress(tab)} style={tw`flex items-center`}>
-                        {renderIcon(tab.icon, tab.type)}
-                    </TouchableOpacity>
-                ))}
-            </View> */}
-            
+            </ScrollView>       
         </View>
     );
 
@@ -115,16 +80,16 @@ const Award = ({ title, description, profile, username }) => {
             </TouchableOpacity>
             <TouchableOpacity>
                 <View style={tw`flex flex-col mx-4`}>
-                    <View style={tw`w-full rounded-lg overflow-hidden`}>
-                        <ImageBackground
+                    <View style={tw`w-full rounded-lg overflow-hidden bg-gray-100 p-6`}>
+                        {/* <ImageBackground
                             source={{ uri: profile }}
                             style={{ width: '100%', aspectRatio: 5 / 1, borderRadius: 10 }}
-                            resizeMode="cover">
+                            resizeMode="cover"> */}
                             
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                <Text style={{ color: 'white', fontSize: 22, fontWeight: 'bold' }}>{username}</Text>
+                                <Text style={{ color: 'black', fontSize: 22, fontWeight: 'bold' }}>{username}</Text>
                             </View>
-                        </ImageBackground>
+                        {/* </ImageBackground> */}
                     </View>
                 </View>
             </TouchableOpacity>

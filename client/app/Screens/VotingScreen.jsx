@@ -1,62 +1,114 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
 import tw from 'twrnc';
-import Icon from 'react-native-vector-icons/FontAwesome'; 
-import IconIonic from 'react-native-vector-icons/Ionicons'; 
-import IconFA5 from 'react-native-vector-icons/FontAwesome5';
-import IconFeather from 'react-native-vector-icons/Feather';
-import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const VotingPage = () => {
 
-    const navigation = useNavigation(); // useNavigation hook
+    const [loggedInUserId, setLoggedInUserId] = useState(null);
+    const [users, setUsers] = useState([]);
+    const [userVotes, setUserVotes] = useState([]);
+    const [awards, setAwards] = useState([]);
 
-    // to be retrieved from the database
-    const contestants = ["Vege Crunch", "YumyumNomNom", "QuackKing", "oop", "skibidiRIZZ"];
+    useEffect(() => {
+        fetchLoggedInUserId();
+        fetchUsers();
+        fetchAwards();
+        fetchUserVotes();
+    }, []);
 
-    const awards = [
-        {
-            title: "Funniest Nickname",
-            description: "Who won your laughs in August?",
-            contestants: contestants,
-        },
-    ];
-
-    const handleVotePress = (contestant) => {
-        // Handle the vote button press here
-        Alert.alert('Great Choice!', `You have voted for ${contestant}`);
+    const fetchLoggedInUserId = async () => {
+        const userId = await AsyncStorage.getItem('user_id');
+        setLoggedInUserId(userId);
     };
 
-    // bottom tab
-    // const tabs = [
-    //     { name: "Home", icon: "home", type: "feather" },
-    //     { name: "Contest", icon: "award", type: "feather" },
-    //     { name: "Add", icon: "plus-square", type: "feather" }, 
-    //     { name: "Replies", icon: "inbox", type: "feather" },
-    //     { name: "Profile", icon: "user", type: "feather" },
-    // ];
+    const fetchUsers = async () => {
+        try {
+        const response = await fetch('http://localhost:5000/dashboard/users');
+        const data = await response.json();
+        setUsers(data.data);
+        } catch (error) {
+        console.error('Error fetching users:', error);
+        }
+    };
 
-    // const renderIcon = (icon, type) => {
-    //     switch (type) {
-    //         case 'ionicons':
-    //             return <IconIonic name={icon} size={24} color="black" />;
-    //         case 'fontawesome5':
-    //             return <IconFA5 name={icon} size={24} color="black" />;
-    //         case 'feather':
-    //             return <IconFeather name={icon} size={24} color="black" />; 
-    //         default:
-    //             return <Icon name={icon} size={24} color="black" />;
-    //     }
-    // };
+    const fetchAwards = async () => {
+        try {
+          const response = await fetch('http://localhost:5000/dashboard/awards');
+          const data = await response.json();
+          setAwards(data.data);
+        } catch (error) {
+          console.error('Error fetching awards:', error);
+        }
+    };
 
-    // const handleTabPress = (tab) => {
-    //     navigation.navigate(tab.name); 
-    // };
-    // end of bottom tab
+    const fetchUserVotes = async () => {
+        if (!loggedInUserId) return;
+        
+        try {
+            const response = await fetch(`http://localhost:5000/dashboard/user-votes/${loggedInUserId}`);
+            const data = await response.json();
+            setUserVotes(data.votes);
+            console.log(data.votes)
+        } catch (error) {
+            console.error('Error fetching user votes:', error);
+        }
+    };
+
+    const hasVotedForAward = (awardId) => {
+        return userVotes.some(vote => vote.award_id === awardId);
+    };
+
+    const hasVotedUserForAward = (awardId, contestantId) => {
+        return userVotes.some(vote => vote.award_id === awardId && vote.user_id === contestantId);
+    };
+
+    const handleVotePress = async (award, contestant) => {
+        if (hasVotedForAward(award.id)) {
+            Alert.alert('You have already voted for this award.');
+            return;
+        }
+
+        try {
+            const response = await fetch('http://localhost:5000/dashboard/vote', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    voter_id: loggedInUserId,
+                    user_id: contestant.id,
+                    award_id: award.id,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                console.log("voted")
+                fetchUserVotes();
+            } else {
+                Alert.alert('Error', data.error || 'Something went wrong.');
+            }
+        } catch (error) {
+            console.error('Error voting:', error);
+            Alert.alert('Error', 'Something went wrong while voting.');
+        }
+
+        Alert.alert('Great Choice!', `You have voted for ${contestant.username}`);
+        fetchUserVotes();
+    };
 
     // style for vote button
     const styles = {
         buttonContainer: {
+          backgroundColor: tw.color('orange-500'),
+          paddingHorizontal: 16, 
+          paddingVertical: 8, 
+          borderRadius: 20,
+          marginTop: 8,
+        },
+        votedButtonContainer: {
           backgroundColor: 'orange',
           paddingHorizontal: 16, 
           paddingVertical: 8, 
@@ -86,17 +138,19 @@ const VotingPage = () => {
                         <Text style={tw`text-gray-500 mb-3`}>
                             {award.description}
                         </Text>
-                        
-                        {award.contestants.map((contestant, cIndex) => (
+
+                        {users.map((contestant, cIndex) => (
                             <View key={cIndex} style={tw`mb-1`}>
                                 <View style={styles.contestantContainer}>
-                                    <Text style={tw`text-lg`}> {contestant}</Text>
+                                    <Text style={tw`text-lg`}> {contestant.username}</Text>
                                 </View>
                                 <View style={tw`flex-row-reverse mb-1`}>
                                     <TouchableOpacity 
-                                        style={styles.buttonContainer} 
-                                        onPress={() => handleVotePress(contestant)}>
-                                        <Text style={styles.buttonText}>Vote</Text>
+                                        style={hasVotedUserForAward(award.id, contestant.id) ? styles.buttonContainer : styles.votedButtonContainer}
+                                        onPress={() => handleVotePress(award, contestant)}>
+                                        <Text style={styles.buttonText}>
+                                            {hasVotedUserForAward(award.id, contestant.id) ? 'Voted' : 'Vote'}
+                                        </Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>
@@ -104,14 +158,6 @@ const VotingPage = () => {
                     </View>
                 ))}
             </ScrollView>
-            
-            {/* <View style={tw`flex flex-row justify-around bg-orange-500 py-4`}>
-                {tabs.map((tab) => (
-                    <TouchableOpacity key={tab.name} onPress={() => handleTabPress(tab)} style={tw`flex items-center`}>
-                        {renderIcon(tab.icon, tab.type)}
-                    </TouchableOpacity>
-                ))}
-            </View> */}
         </View>
     );
 };

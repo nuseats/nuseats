@@ -1,5 +1,6 @@
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import React, { useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const RegisterScreen = ({navigation}) => {
   const [name, setName] = useState('');
@@ -32,6 +33,8 @@ const RegisterScreen = ({navigation}) => {
         if (data.token) {
           const token = data.token;
           console.log('Register successful! Token:', token);
+          await AsyncStorage.setItem('token', token);
+          await AsyncStorage.setItem('user_id', data.user_id);
           navigation.navigate('Main');
         } else {
           console.log('Token not found in response:', data);
@@ -95,6 +98,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
+    backgroundColor: 'white'
   },
   title: {
     fontSize: 24,
